@@ -21,3 +21,7 @@ def fetch_data():
                     content = data["content"]
                     if url and content:
                         yield url, content
+
+
+if __name__ == "__main__":
+    pass
