@@ -1,6 +1,7 @@
 import re
 from bs4 import BeautifulSoup
 from nltk.stem import PorterStemmer
+from loads import fetch_data
 
 porter_stemmer = PorterStemmer()
 
@@ -22,7 +23,7 @@ def tokenize(text):
 def calculate_tf(html):
     text = html_to_text(html)
     words = tokenize(text)
-    frequencies: dict[str, int] = {}
+    frequencies = {}
     for w in words:
         root = porter_stemmer.stem(w)
         prev = frequencies.get(root, 0)
@@ -54,4 +55,5 @@ if __name__ == "__main__":
       </body>
     </html>
     """
-    print(calculate_tf(sample))
+    freqs = calculate_tf(sample)
+    print(freqs)
