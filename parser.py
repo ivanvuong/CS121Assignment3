@@ -31,29 +31,4 @@ def calculate_tf(html):
     return frequencies
 
 if __name__ == "__main__":
-    sample = """
-    <html>
-      <head>
-        <title>Artificial Intelligence @ UCI</title>
-      </head>
-      <body>
-        <h1>Welcome to AI@UCI!</h1>
-        <p>
-          AI@UCI is a <strong>student-run</strong> organization
-          focused on <em>machine learning</em> and <em>data science</em>.
-        </p>
-        <h2>Upcoming Events</h2>
-        <ul>
-          <li>Workshop: <a href="#">Deep Learning 101</a></li>
-          <li>Seminar: Ethics in AI</li>
-          <li>Hackathon: Build an AI Agent</li>
-        </ul>
-        <p>
-          Visit our <a href="https://aiclub.ics.uci.edu">website</a>
-          or email us at <a href="mailto:aiatuci@gmail.com">aiatuci@gmail.com</a>.
-        </p>
-      </body>
-    </html>
-    """
-    freqs = calculate_tf(sample)
-    print(freqs)
+    pass
