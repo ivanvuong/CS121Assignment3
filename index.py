@@ -36,7 +36,7 @@ def create_inverted_index():
     return inverted_index
 
 def save_index_to_json(inverted_index: dict):
-    with open(filename, "w", encoding="utf-8") as f:
+    with open("inverted_index.json", "w", encoding="utf-8") as f:
         json.dump(inverted_index, f)
 
 def number_of_indexed_documents(inverted_index: dict):
