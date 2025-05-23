@@ -1,6 +1,11 @@
 import json
 from parser import tokenize, porter_stemmer
 
+INDEX_FILE = "inverted_index.json"
+result = {}
+with open('inverted_index.json', 'r') as f:
+    result = json.load(f)
+
 def load_postings(term):
     return result[term]
     
