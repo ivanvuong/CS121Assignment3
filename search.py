@@ -1,13 +1,13 @@
-import json
+import json, ijson
 from parser import tokenize, porter_stemmer
 
-INDEX_FILE = "inverted_index.json"
-result = {}
-with open('inverted_index.json', 'r') as f:
-    result = json.load(f)
+def load_postings(query, file_name="inverted_index.json"):
+    with open(file_name, 'r') as f:
+        parser = ijson.kvitems(f, '')
 
-def load_postings(term):
-    return result[term]
+        for term, postings in parser:
+            if (term == query):
+                return postings
     
 def query_parsing(query):
     tokens = tokenize(query)
@@ -42,16 +42,13 @@ def and_query(terms):
     return intersect(posting_sets)
 
 if __name__ == "__main__":
-    queries = ["cristina lopes", "machine learning", "acm", "master of software engineering"]
+    query = input("Enter search query: ")
+    stems = query_parsing(query)
+    hits = and_query(stems)
+    top5 = sorted(hits)[:5]  
 
-    for query in queries:
-        stems = query_parsing(query)
-        hits = and_query(stems)
-        top5 = sorted(hits)[:5]  
-
-        print(f"Query: {query}")
-        print("stems =", stems)
-        print("total hits =", len(hits))
-        print("top 5 URLs:")
-        for url in top5:
-            print("    ", url)
+    print("stems =", stems)
+    print("total hits =", len(hits))
+    print("top 5 URLs:")
+    for url in top5:
+        print("    ", url)
