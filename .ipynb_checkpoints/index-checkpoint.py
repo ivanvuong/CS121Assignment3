@@ -35,28 +35,9 @@ def create_inverted_index():
 
     return inverted_index
 
-def save_index_to_split_json(inverted_index: dict):
-    index = {
-        "a-f": {},
-        "g-l": {},
-        "m-r": {},
-        "s-z": {}, 
-    }
-
-    for term, postings in inverted_index.items():
-        first_letter_ascii = ord(term[0].lower())
-        if first_letter_ascii >= 97 and first_letter_ascii <= 102:
-            index["a-f"][term] = postings
-        elif first_letter_ascii >= 103 and first_letter_ascii <= 108:
-            index["g-l"][term] = postings
-        elif first_letter_ascii >= 109 and first_letter_ascii <= 114:
-            index["m-r"][term] = postings
-        elif first_letter_ascii >= 115 and first_letter_ascii <= 122:
-            index["s-z"][term] = postings 
-
-    for letter, postings in index.items():
-        with open(f"{letter}.json", "w", encoding="utf-8") as f:
-            json.dump(postings, f, indent = 2)    
+def save_index_to_json(inverted_index: dict):
+    with open("inverted_index.json", "w", encoding="utf-8") as f:
+        json.dump(inverted_index, f)
 
 def number_of_indexed_documents(inverted_index: dict):
     docs = set()
@@ -69,14 +50,14 @@ def number_of_unique_tokens(inverted_index: dict):
     return len(inverted_index.keys())
 
 def total_size():
-    file_path = "inverted_index.json"       
+    file_path = "inverted_index.json"
     if os.path.exists(file_path):
         size_kb = os.path.getsize(file_path) / 1024 
         return size_kb
 
 if __name__ == "__main__":
     inverted_index = create_inverted_index()
-    save_index_to_split_json(inverted_index)
-    # print(f"Number of indexed documents: {number_of_indexed_documents(inverted_index)}")
-    # print(f"Number of unique tokens: {number_of_unique_tokens(inverted_index)}")
-    # print(f"Total Size in KB: {total_size()}")
+    save_index_to_json(inverted_index)
+    print(f"Number of indexed documents: {number_of_indexed_documents(inverted_index)}")
+    print(f"Number of unique tokens: {number_of_unique_tokens(inverted_index)}")
+    print(f"Total Size in KB: {total_size()}")
