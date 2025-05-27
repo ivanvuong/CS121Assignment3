@@ -36,24 +36,15 @@ def create_inverted_index():
     return inverted_index
 
 def save_index_to_split_json(inverted_index: dict):
-    index = {
-        "a-f": {},
-        "g-l": {},
-        "m-r": {},
-        "s-z": {}, 
-    }
+    index = {}
+    for i in range(97, 123):
+        index[chr(i)] = {}
 
     for term, postings in inverted_index.items():
         first_letter_ascii = ord(term[0].lower())
-        if first_letter_ascii >= 97 and first_letter_ascii <= 102:
-            index["a-f"][term] = postings
-        elif first_letter_ascii >= 103 and first_letter_ascii <= 108:
-            index["g-l"][term] = postings
-        elif first_letter_ascii >= 109 and first_letter_ascii <= 114:
-            index["m-r"][term] = postings
-        elif first_letter_ascii >= 115 and first_letter_ascii <= 122:
-            index["s-z"][term] = postings 
-
+        if first_letter_ascii >= 97 and first_letter_ascii <= 122:
+            index[term[0].lower()][term] = postings
+    
     for letter, postings in index.items():
         with open(f"{letter}.json", "w", encoding="utf-8") as f:
             json.dump(postings, f, indent = 2)    

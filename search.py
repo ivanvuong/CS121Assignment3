@@ -4,14 +4,8 @@ from parser import tokenize, porter_stemmer
 def load_postings(query):
     first_letter = ord(query[0])    
     file_name = ""
-    if first_letter >= 97 and first_letter <= 102:
-        file_name = "a-f.json"
-    elif first_letter >= 103 and first_letter <= 108:
-        file_name = "g-l.json"
-    elif first_letter >= 109 and first_letter <= 114:
-        file_name = "m-r.json"
-    elif first_letter >= 115 and first_letter <= 122:
-        file_name = "s-z.json" 
+    if first_letter >= 97 and first_letter <= 122:
+        file_name = f"{chr(first_letter)}.json"
     with open(file_name, 'r', encoding='utf-8') as f:
         index = json.load(f)
         return index[query]
@@ -70,6 +64,7 @@ def document_tfidf(stems):
 
 if __name__ == "__main__":
     query = input("Enter search query: ")
+    start_time = time.time()
     stems = query_parsing(query)
     hits = document_tfidf(stems)
     top5 = sorted(hits.items(), key=lambda item: item[1], reverse=True)[:5]
@@ -79,3 +74,7 @@ if __name__ == "__main__":
     print("top 5 URLs:")
     for document in top5:
         print("    ", document[0])
+
+    end_time = time.time()
+    elapsed_ms = (end_time - start_time) * 1000
+    print(elapsed_ms)
