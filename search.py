@@ -1,14 +1,15 @@
-import json, math, time 
+import json, math, time, pickle
 from parser import tokenize, porter_stemmer
+
+saved_indices = {}
 
 def load_postings(query):
     first_letter = ord(query[0])    
-    file_name = ""
     if first_letter >= 97 and first_letter <= 122:
-        file_name = f"{chr(first_letter)}.json"
-    with open(file_name, 'r', encoding='utf-8') as f:
-        index = json.load(f)
-        return index[query]
+        file_name = f"{chr(first_letter)}.pkl"
+        with open(file_name, "rb") as f:
+            index = pickle.load(f)
+            return index[query]
     
 def query_parsing(query):
     tokens = tokenize(query)
@@ -44,12 +45,16 @@ def and_query(terms):
 
 def document_tfidf(stems):
     scores = {}
-    documents = and_query(stems)
     total_documents = 55093 ## Report Number 
 
     postings_map = {}
     for stem in stems:
         postings_map[stem] = dict(load_postings(stem))
+
+    sets = []
+    for p in postings_map.values():
+        sets.append(set(p.keys()))
+    documents = intersect(sets)
 
     for document in documents:
         score = 0

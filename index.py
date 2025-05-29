@@ -17,25 +17,30 @@ A posting is the representation of the token’s occurrence in a document.
 '''
 
 from loads import fetch_data
-from parser import calculate_tf
-import json, os
+from parser import calculate_tf, html_to_text
+from urllib.parse import urldefrag
+import json, os, pickle
 
 def create_inverted_index():
     '''
     Map with a token as a key and its list of its corresponding postings 
     '''
     inverted_index = {}
+    visited_sites = set() 
 
     for doc_id, html in fetch_data():
-        tf = calculate_tf(html)
-        for term, frequency in tf.items():
-            if term not in inverted_index:
-                inverted_index[term] = []
-            inverted_index[term].append([doc_id, frequency])
+        defragmented_link, fragment = urldefrag(doc_id)
+        if (defragmented_link not in visited_sites and len(html_to_text(html)) > 1000):
+            tf = calculate_tf(html)
+            for term, frequency in tf.items():
+                if term not in inverted_index:
+                    inverted_index[term] = []
+                inverted_index[term].append([defragmented_link, frequency])
+            visited_sites.add(defragmented_link)
 
     return inverted_index
 
-def save_index_to_split_json(inverted_index: dict):
+def save_index_to_split_pickle(inverted_index: dict):
     index = {}
     for i in range(97, 123):
         index[chr(i)] = {}
@@ -46,8 +51,8 @@ def save_index_to_split_json(inverted_index: dict):
             index[term[0].lower()][term] = postings
     
     for letter, postings in index.items():
-        with open(f"{letter}.json", "w", encoding="utf-8") as f:
-            json.dump(postings, f, indent = 2)    
+        with open(f"{letter}.pkl", "wb") as f:
+            pickle.dump(postings, f)    
 
 def number_of_indexed_documents(inverted_index: dict):
     docs = set()
@@ -67,7 +72,7 @@ def total_size():
 
 if __name__ == "__main__":
     inverted_index = create_inverted_index()
-    save_index_to_split_json(inverted_index)
+    save_index_to_split_pickle(inverted_index)
     # print(f"Number of indexed documents: {number_of_indexed_documents(inverted_index)}")
     # print(f"Number of unique tokens: {number_of_unique_tokens(inverted_index)}")
     # print(f"Total Size in KB: {total_size()}")
