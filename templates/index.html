@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+</head>
+<body style="background-color: lightblue">
+    <div style="display: flex; justify-content: center;">
+    <div style="text-align: center; font-size: x-large;">
+        <h1>Search Engine</h1>
+        <form method="POST" style="display: inline-block;">
+            <input name="query" style="background-color: white; padding: 10px 20px; border: none; border-radius: 5px;" placeholder="Enter query here" value="{{ request.form.query if request.method == 'POST' else '' }}"></input>
+            <button style="background-color: gray; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-left:3px">
+                Submit
+            </button>
+        </form>
+    
+        <div style="display: flex; justify-content: center;">
+            <div style="background-color: lightgoldenrodyellow; height: 500px; width: 900px; border-radius: 10px; margin-top: 20px">
+                {% if stems %}
+                    <p><strong>Stems </strong>= {{ stems }}</p>
+                    <p><strong>Total Hits</strong> = {{ hits|length }}</p>
+                    <p><strong>Top 5 URLs:</strong></p>
+                    <ul>
+                        {% for document in top5 %}
+                        <li style = "list-style-type: none;">
+                            <a href="{{ document[0] }}">{{ document[0] }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                {% endif %}
+            </div> 
+        </div>
+    </div>
+    </div>
+
+</body>
+</html>
