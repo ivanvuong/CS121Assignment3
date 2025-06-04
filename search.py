@@ -1,15 +1,25 @@
 import json, math, time, pickle
 from parser import tokenize, porter_stemmer
 
-saved_indices = {}
+def read_postings(letter, offset, query):
+    with open(f"{letter}.pkl", "rb") as f:
+        f.seek(offset)
+        s_term, postings = pickle.load(f)
+        if s_term == query:
+            return postings
+    return None
 
 def load_postings(query):
-    first_letter = ord(query[0])    
-    if first_letter >= 97 and first_letter <= 122:
-        file_name = f"{chr(first_letter)}.pkl"
-        with open(file_name, "rb") as f:
-            index = pickle.load(f)
-            return index[query]
+    first_letter_ascii = ord(query[0].lower())
+    if 97 <= first_letter_ascii <= 122:
+        first_letter = query[0].lower()
+        with open(f"{first_letter}_offsets.pkl", "rb") as f:
+            offsets = pickle.load(f)
+        if query not in offsets:
+            return None
+        offset = offsets[query]
+        return read_postings(first_letter, offset, query)
+    return None      
     
 def query_parsing(query):
     tokens = tokenize(query)
@@ -49,8 +59,14 @@ def document_tfidf(stems):
 
     postings_map = {}
     for stem in stems:
-        postings_map[stem] = dict(load_postings(stem))
+        postings = load_postings(stem)
+        if postings is None:
+            continue 
+        postings_map[stem] = dict(postings)
 
+    if not postings_map:
+        return {}  
+        
     sets = []
     for p in postings_map.values():
         sets.append(set(p.keys()))

@@ -51,8 +51,15 @@ def save_index_to_split_pickle(inverted_index: dict):
             index[term[0].lower()][term] = postings
     
     for letter, postings in index.items():
+        offsets = {}
         with open(f"{letter}.pkl", "wb") as f:
             pickle.dump(postings, f)    
+            for term, postings in postings.items():
+                offset = f.tell()
+                offsets[term] = offset
+                pickle.dump((term, postings), f)
+        with open(f"{letter}_offsets.pkl", "wb") as f:
+            pickle.dump(offsets, f)
 
 def number_of_indexed_documents(inverted_index: dict):
     docs = set()
